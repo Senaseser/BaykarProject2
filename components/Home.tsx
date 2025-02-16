@@ -28,11 +28,26 @@ export default function Home() {
           const savedPassengers = localStorage.getItem('passengers');
       
           if (savedSeats) {
-            setSelectedSeats(JSON.parse(savedSeats));
+            try {
+              const seats = JSON.parse(savedSeats);
+              setSelectedSeats(seats);
+              if (seats.length > 0) {
+                setActivePassenger(seats[0]);
+              }
+            } catch (error) {
+              console.error('Error parsing savedSeats:', error);
+              setSelectedSeats([]);
+            }
           }
           if (savedPassengers) {
-            setPassengers(JSON.parse(savedPassengers));
+            try {
+              setPassengers(JSON.parse(savedPassengers));
+            } catch (error) {
+              console.error('Error parsing savedPassengers:', error);
+              setPassengers([]);
+            }
           }
+          
         }, []);
       
         useEffect(() => {
@@ -235,6 +250,54 @@ export default function Home() {
             setActivePassenger(selectedSeats[currentIndex + 1]);
           }
         };
+      
+        const handleConfirmationInactivity = () => {
+          const inactivityTimeout = setTimeout(() => {
+            setSelectedSeats([]);
+            setActivePassenger(1);
+            setPassengers([]);
+            setShowConfirmation(false);
+            window.location.reload();
+          },30000); // 30 saniye
+      
+          return () => clearTimeout(inactivityTimeout);
+        };
+      
+        // Sayfa yüklendiğinde veya seçili koltuklar değiştiğinde ilk yolcuyu aç
+        useEffect(() => {
+          if (selectedSeats.length > 0) {
+            setActivePassenger(selectedSeats[0]);
+          } else {
+            setActivePassenger(1);
+          }
+        }, [selectedSeats]);
+      
+        // Sayfa ilk yüklendiğinde localStorage'dan verileri al
+        useEffect(() => {
+          const savedSeats = localStorage.getItem('selectedSeats');
+          const savedPassengers = localStorage.getItem('passengers');
+      
+          if (savedSeats) {
+            try {
+              const seats = JSON.parse(savedSeats);
+              setSelectedSeats(seats);
+              if (seats.length > 0) {
+                setActivePassenger(seats[0]);
+              }
+            } catch (error) {
+              console.error('Error parsing savedSeats:', error);
+              setSelectedSeats([]);
+            }
+          }
+          if (savedPassengers) {
+            try {
+              setPassengers(JSON.parse(savedPassengers));
+            } catch (error) {
+              console.error('Error parsing savedPassengers:', error);
+              setPassengers([]);
+            }
+          }
+        }, []);
       
         return (
           <main className="flex min-h-screen p-8">
@@ -493,6 +556,7 @@ export default function Home() {
                   setActivePassenger(1);
                   setShowConfirmation(false);
                 }}
+                onMount={handleConfirmationInactivity}
               />
             )}
           </main>
