@@ -1,10 +1,8 @@
 "use client";
 
-// import Plane from "../../assets/airplane.png";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { PassengerType } from "@/types/Passenger";
 import { ConfirmationModal } from "@/components/ConfirmationModal";
-import SuccessModal from './SuccessModal';
 
 const BASE_URL = "https://jsonplaceholder.typicode.com/users";
 
@@ -16,23 +14,18 @@ export default function Home() {
         const initialPassengers = typeof window !== 'undefined' 
           ? JSON.parse(localStorage.getItem('passengers') || '[]') 
           : [];
-        const initialActivePassenger = typeof window !== 'undefined' 
-          ? JSON.parse(localStorage.getItem('activePassenger') || '1') 
-          : 1;
         const [selectedSeats, setSelectedSeats] = useState<number[]>(initialSelectedSeats);
-        const [activePassenger, setActivePassenger] = useState(initialActivePassenger);
+        const [activePassenger, setActivePassenger] = useState(1);
         const [passengers, setPassengers] = useState<PassengerType[]>(initialPassengers);
         const [warning, setWarning] = useState<string>('');
+        const [successMessage, setSuccessMessage] = useState<string>('');
         const [showConfirmation, setShowConfirmation] = useState(false);
-        const [showSuccessModal, setShowSuccessModal] = useState(false);
       
         useEffect(() => {
-          localStorage.removeItem('selectedSeats');
-          localStorage.removeItem('passengers');
-          localStorage.removeItem('activePassenger');
+         // localStorage.removeItem('selectedSeats');
+         // localStorage.removeItem('passengers');
           const savedSeats = localStorage.getItem('selectedSeats');
           const savedPassengers = localStorage.getItem('passengers');
-          const savedActivePassenger = localStorage.getItem('activePassenger');
       
           if (savedSeats) {
             setSelectedSeats(JSON.parse(savedSeats));
@@ -40,16 +33,12 @@ export default function Home() {
           if (savedPassengers) {
             setPassengers(JSON.parse(savedPassengers));
           }
-          if (savedActivePassenger) {
-            setActivePassenger(JSON.parse(savedActivePassenger));
-          }
         }, []);
       
         useEffect(() => {
           localStorage.setItem('selectedSeats', JSON.stringify(selectedSeats));
           localStorage.setItem('passengers', JSON.stringify(passengers));
-          localStorage.setItem('activePassenger', JSON.stringify(activePassenger));
-        }, [selectedSeats, passengers, activePassenger]);
+        }, [selectedSeats, passengers]);
       
         const occupiedSeats = passengers.map(passenger => passenger.id).filter(Boolean);
       
@@ -117,6 +106,15 @@ export default function Home() {
           setWarning(message);
           setTimeout(() => {
             setWarning('');
+          }, 3000);
+        };
+      
+        const showSuccess = (message: string) => {
+          setSuccessMessage(message);
+          setTimeout(() => {
+            setSuccessMessage('');
+            setSelectedSeats([]);
+            setActivePassenger(1);
           }, 3000);
         };
       
@@ -241,31 +239,22 @@ export default function Home() {
         return (
           <main className="flex min-h-screen p-8">
             <div className="w-1/2 relative">
-            {/* <Image
-            src={Plane}
-            alt="plane"
-            width={1500}
-            height={2000}
-            className="absolute top-0 "/> */}
-      
-            {/* <div 
-                className="absolute inset-0 -z-10 bg-contain bg-no-repeat bg-center"
-                style={{ backgroundImage: `url(${Plane.src})` }}
-              /> */}
               <div className="airplane-outline px-20 py-10">
-                <div className="grid grid-cols-4 gap-1 max-w-[150px] mx-auto">
+                <div className="grid grid-cols-4 gap-0.5 max-w-[150px] mx-auto">
                   {[...Array(90)].map((_, index) => {
                     const seatNumber = index + 1;
                     const isOccupied = occupiedSeats.includes(seatNumber) && !selectedSeats.includes(seatNumber);
                     const passenger = passengers.find(p => p.id === seatNumber);
                     
-                    const extraClass = seatNumber % 4 === 2 ? 'mr-12' : '';
+                    const extraClass = seatNumber % 4 === 2 
+                      ? 'mr-12 after:content-[""] after:absolute after:right-[-31px] after:top-0 after:h-full after:w-[1px] after:bg-gray-300' 
+                      : '';
                     
                     return (
                       <div className={`relative ${extraClass}`} key={index}>
                         <button
                           onClick={() => handleSeatSelect(seatNumber)}
-                          className={`w-8 h-10 border rounded-md flex items-center justify-center text-sm
+                          className={`w-6 h-8 border rounded-md flex items-center justify-center text-sm
                             ${isOccupied ? 'bg-gray-300 cursor-not-allowed group' : 
                               selectedSeats.includes(seatNumber) ? 'bg-[#fcc75b]' : 'bg-white hover:bg-gray-100'}
                             transition-colors`}
@@ -285,15 +274,15 @@ export default function Home() {
               </div>
               <div className="mt-8 flex gap-4 justify-center">
                 <div className="flex items-center gap-2">
-                  <div className="w-3 h-4 bg-white border rounded-md"></div>
+                  <div className="w-4 h-5 bg-white border rounded-md"></div>
                   <span>Boş</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="w-3 h-4 bg-[#fcc75b] border rounded-md"></div>
+                  <div className="w-4 h-5 bg-[#fcc75b] border rounded-md"></div>
                   <span>Seçili</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="w-3 h-4 bg-[#e5e5e5] border rounded-md"></div>
+                  <div className="w-4 h-5 bg-[#e5e5e5] border rounded-md"></div>
                   <span>Dolu</span>
                 </div>
               </div>
@@ -454,19 +443,18 @@ export default function Home() {
                     return;
                   }
                   
-                  setShowSuccessModal(true);
-                  setSelectedSeats([]);
-                  setActivePassenger(1);
-                  setPassengers([]);
-                  localStorage.removeItem('selectedSeats');
-                  localStorage.removeItem('passengers');
-                  localStorage.removeItem('activePassenger');
+                  showSuccess('✓ Rezervasyon işleminiz başarıyla tamamlanmıştır');
                 }}
               >
                 İşlemleri Tamamla
                 {warning && (
                   <p className="absolute -top-4 left-0 text-red-500 text-xs animate-fade-in-out">
                     {warning}
+                  </p>
+                )}
+                {successMessage && (
+                  <p className="absolute -top-4 left-0 text-green-500 text-xs animate-fade-in-out">
+                    {successMessage}
                   </p>
                 )}
               </button>
@@ -476,14 +464,14 @@ export default function Home() {
                   <div className="flex justify-between items-center">
                     <div className="flex gap-2">
                       {selectedSeats.map(seat => (
-                        <span key={seat} className="bg-[#fcc75b] px-1 py-1.5 rounded border border-[#b9b3a9]">
+                        <span key={seat} className="bg-[#fcc75b] w-6 h-8 flex justify-center items-center rounded border border-[#b9b3a9]">
                           {seat}
                         </span>
                       ))}
                     </div>
                     <div className="text-right">
                       <div className="flex justify-end items-center gap-1">
-                      <div>{selectedSeats.length}x</div>  <div className="w-3 h-4 bg-[#fcc75b] rounded-md border border-[#b9b3a9]"></div>
+                      <div>{selectedSeats.length}x</div>  <div className="w-4 h-5 bg-[#fcc75b] rounded-md border border-[#b9b3a9]"></div>
                       </div>
                       <div className="text-xl font-bold">
                         {(selectedSeats.length * 1000).toLocaleString('tr-TR')} TL
@@ -507,19 +495,6 @@ export default function Home() {
                 }}
               />
             )}
-
-            <SuccessModal 
-              isOpen={showSuccessModal}
-              onClose={() => {
-                setShowSuccessModal(false);
-                setSelectedSeats([]);
-                setActivePassenger(1);
-                setPassengers([]);
-                localStorage.removeItem('selectedSeats');
-                localStorage.removeItem('passengers');
-                localStorage.removeItem('activePassenger');
-              }}
-            />
           </main>
         );
 } 
