@@ -301,36 +301,36 @@ export default function Home() {
           <main className="flex min-h-screen p-8">
             <div className="w-1/2 relative">
               <div className="airplane-outline px-20 py-10">
-                <div className="grid grid-cols-4 gap-0.5 max-w-[150px] mx-auto">
-                  {[...Array(90)].map((_, index) => {
-                    const seatNumber = index + 1;
-                    const isOccupied = occupiedSeats.includes(seatNumber) && !selectedSeats.includes(seatNumber);
-                    const passenger = passengers.find(p => p.id === seatNumber);
-                    
-                    const extraClass = seatNumber % 4 === 2 
-                      ? 'mr-12 after:content-[""] after:absolute after:right-[-31px] after:top-0 after:h-full after:w-[1px] after:bg-gray-300' 
-                      : '';
-                    
-                    return (
-                      <div className={`relative ${extraClass}`} key={index}>
-                        <button
-                          onClick={() => handleSeatSelect(seatNumber)}
-                          className={`w-6 h-8 border rounded-md flex items-center justify-center text-sm
-                            ${isOccupied ? 'bg-gray-300 cursor-not-allowed group' : 
-                              selectedSeats.includes(seatNumber) ? 'bg-[#fcc75b]' : 'bg-white hover:bg-gray-100'}
-                            transition-colors`}
-                        >
-                          {seatNumber}
-                          {isOccupied && passenger && (
-                            <div className="absolute invisible group-hover:visible bg-black text-white text-xs rounded py-1 px-2 -top-8 left-1/2 -translate-x-1/2 w-max">
-                              {passenger.name}
-                              <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 border-4 border-transparent border-t-black"></div>
-                            </div>
-                          )}
-                        </button>
-                      </div>
-                    );
-                  })}
+                           <div className="grid grid-cols-2 gap-0.5 max-w-[150px] mx-auto">
+
+                  {[...Array(45)].map((_, rowIndex) => (
+                    <div key={rowIndex} className="flex gap-1">
+                      {[0, 1].map((colIndex) => {
+                        const seatNumber = rowIndex * 2 + colIndex + 1;
+                        const isOccupied = occupiedSeats.includes(seatNumber) && !selectedSeats.includes(seatNumber);
+                        const passenger = passengers.find(p => p.id === seatNumber);
+
+                        return (
+                          <button
+                            key={colIndex}
+                            onClick={() => handleSeatSelect(seatNumber)}
+                            className={`w-6 h-8 border rounded-md flex items-center justify-center text-sm
+                              ${isOccupied ? 'bg-gray-300 cursor-not-allowed group' : 
+                                selectedSeats.includes(seatNumber) ? 'bg-[#fcc75b]' : 'bg-white hover:bg-gray-100'}
+                              transition-colors`}
+                          >
+                            {seatNumber}
+                            {isOccupied && passenger && (
+                              <div className="absolute invisible group-hover:visible bg-black text-white text-xs rounded py-1 px-2 -top-8 left-1/2 -translate-x-1/2 w-max">
+                                {passenger.name}
+                                <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 border-4 border-transparent border-t-black"></div>
+                              </div>
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  ))}
                 </div>
               </div>
               <div className="mt-8 flex gap-4 justify-center">
