@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { PassengerType } from "@/types/Passenger";
 import { ConfirmationModal } from "@/components/ConfirmationModal";
+import { Toaster, toast } from 'react-hot-toast';
 
 const BASE_URL = "https://jsonplaceholder.typicode.com/users";
 
@@ -17,8 +18,6 @@ export default function Home() {
         const [selectedSeats, setSelectedSeats] = useState<number[]>(initialSelectedSeats);
         const [activePassenger, setActivePassenger] = useState(1);
         const [passengers, setPassengers] = useState<PassengerType[]>(initialPassengers);
-        const [warning, setWarning] = useState<string>('');
-        const [successMessage, setSuccessMessage] = useState<string>('');
         const [showConfirmation, setShowConfirmation] = useState(false);
       
         useEffect(() => {
@@ -118,16 +117,26 @@ export default function Home() {
         }, [fetchUsers]);
       
         const showWarning = (message: string) => {
-          setWarning(message);
-          setTimeout(() => {
-            setWarning('');
-          }, 3000);
+          toast.error(message, {
+            duration: 3000,
+            position: 'top-right',
+            style: {
+              background: '#ff4b4b',
+              color: '#fff',
+            },
+          });
         };
       
         const showSuccess = (message: string) => {
-          setSuccessMessage(message);
+          toast.success(message, {
+            duration: 3000,
+            position: 'top-right',
+            style: {
+              background: '#48BB78',
+              color: '#fff',
+            },
+          });
           setTimeout(() => {
-            setSuccessMessage('');
             setSelectedSeats([]);
             setActivePassenger(1);
           }, 3000);
@@ -136,7 +145,7 @@ export default function Home() {
         const handleSeatSelect = (seatNumber: number) => {
           startInactivityTimer(); 
           if (occupiedSeats.includes(seatNumber)) {
-            showWarning('* Bu koltuk dolu');
+            showWarning('Bu koltuk dolu');
             return;
           }
       
@@ -146,7 +155,7 @@ export default function Home() {
           } else if (selectedSeats.length < 3) {
             setSelectedSeats([...selectedSeats, seatNumber]);
           } else {
-            showWarning('* En fazla 3 koltuk seçebilirsiniz');
+            showWarning('En fazla 3 koltuk seçebilirsiniz');
           }
         };
       
@@ -199,11 +208,6 @@ export default function Home() {
         const handleNextPassenger = () => {
           let currentPassenger = passengers.find(p => p.id === activePassenger);
           
-          console.log('Current Passenger:', currentPassenger);
-          console.log('Selected Seats:', selectedSeats);
-          console.log('Active Passenger:', activePassenger);
-          console.log('Seat Number:', activePassenger);
-          
           if (!currentPassenger) {
             currentPassenger = {
               id: activePassenger,
@@ -215,7 +219,7 @@ export default function Home() {
               birthday: '',
             };
             setPassengers([...passengers, currentPassenger]);
-            showWarning('* Lütfen tüm alanları doldurun');
+            showWarning('Lütfen tüm alanları doldurun');
             return;
           }
       
@@ -228,20 +232,18 @@ export default function Home() {
             email: Boolean(currentPassenger.email?.trim())
           };
       
-          console.log('Field checks:', checks);
-      
           if (Object.values(checks).some(check => check === false)) {
-            showWarning('* Lütfen tüm alanları doldurun');
+            showWarning('Lütfen tüm alanları doldurun');
             return;
           }
       
           if (!isValidPhone(currentPassenger.phoneNumber)) {
-            showWarning('* Geçerli bir telefon numarası giriniz');
+            showWarning('Geçerli bir telefon numarası giriniz');
             return;
           }
       
           if (!isValidEmail(currentPassenger.email)) {
-            showWarning('* Geçerli bir email adresi giriniz');
+            showWarning('Geçerli bir email adresi giriniz');
             return;
           }
       
@@ -299,6 +301,7 @@ export default function Home() {
       
         return (
           <main className="flex min-h-screen p-8">
+            <Toaster />
             <div className="w-1/2 relative">
               <div className="airplane-outline px-20 py-10">
                            <div className="grid grid-cols-2 gap-0.5 max-w-[150px] mx-auto">
@@ -364,7 +367,7 @@ export default function Home() {
                         const prevPassenger = passengers.find(p => p.id === prevSeat);
                         
                         if (!prevPassenger || !isFormValid(prevPassenger)) {
-                          showWarning(`* Lütfen ${i + 1}. yolcu bilgilerini tamamlayın`);
+                          showWarning(`Lütfen ${i + 1}. yolcu bilgilerini tamamlayın`);
                           setActivePassenger(prevSeat);
                           return;
                         }
@@ -500,24 +503,14 @@ export default function Home() {
                   });
       
                   if (!allPassengersValid) {
-                    showWarning('* Lütfen tüm yolcu bilgilerini tamamlayın');
+                    showWarning('Lütfen tüm yolcu bilgilerini tamamlayın');
                     return;
                   }
                   
-                  showSuccess('✓ Rezervasyon işleminiz başarıyla tamamlanmıştır');
+                  showSuccess('Rezervasyon işleminiz başarıyla tamamlanmıştır');
                 }}
               >
                 İşlemleri Tamamla
-                {warning && (
-                  <p className="absolute -top-4 left-0 text-red-500 text-xs animate-fade-in-out">
-                    {warning}
-                  </p>
-                )}
-                {successMessage && (
-                  <p className="absolute -top-4 left-0 text-green-500 text-xs animate-fade-in-out">
-                    {successMessage}
-                  </p>
-                )}
               </button>
       
               {selectedSeats.length > 0 && (
