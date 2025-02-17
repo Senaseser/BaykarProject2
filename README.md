@@ -7,9 +7,9 @@ A modern, interactive flight seat reservation system built with Next.js, TypeScr
 ### Seat Selection
 - Interactive seat map visualization
 - Support for up to 3 seats per reservation
- -  Available seats
- -  Selected seats
- -  Occupied seats
+  -  Available seats
+  -  Selected seats
+  -  Occupied seats
 - Real-time seat availability status
 - Hover tooltips showing passenger information for occupied seats
 
@@ -59,7 +59,7 @@ Open your terminal and run this commands:
 
 3. Run the development server:
 
-npm run dev
+### `npm run dev`
 
 4. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
