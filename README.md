@@ -1,36 +1,126 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ✈️ Flight Seat Reservation System
 
-## Getting Started
+A modern, interactive flight seat reservation system built with Next.js, TypeScript, and Tailwind CSS. This application provides a user-friendly interface for selecting seats and managing passenger information in real-time.
 
-First, run the development server:
+## 🌟 Features
 
-```bash
+### Seat Selection
+- Interactive seat map visualization
+- Support for up to 3 seats per reservation
+ -  Available seats
+ -  Selected seats
+ -  Occupied seats
+- Real-time seat availability status
+- Hover tooltips showing passenger information for occupied seats
+
+### Passenger Management
+- Detailed passenger information collection:
+  - Name and surname
+  - Phone number (with Turkish format validation)
+  - Email validation
+  - Gender selection
+  - Birthday
+- Multi-passenger support with step-by-step form progression
+- Real-time form validation
+- Progress tracking between multiple passengers
+
+### User Experience
+- Persistent data storage using localStorage
+- Inactivity detection (30-second timeout)
+- Confirmation modal for session management
+- Toast notifications for user feedback
+- Responsive design
+- Dynamic pricing calculation
+
+## 🛠️ Technical Stack
+
+- **Framework**: Next.js 13+ with App Router
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS
+- **State Management**: React Hooks
+- **Form Handling**: Custom validation
+- **Notifications**: React Hot Toast
+- **Data Persistence**: LocalStorage API
+
+
+## 🚀 Getting Started
+
+To run the project locally, follow these steps:
+
+1. Clone the repository:
+Open your terminal and run this commands:
+
+### `git clone https://github.com/Senaseser/BaykarProject2.git`  
+
+### `cd BaykarProject2`
+
+2. Install the necessary dependencies:
+### `npm install`
+
+3. Run the development server:
+
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+4. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 💻 Usage
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. **Seat Selection**
+   - Click on available seats to select (maximum 3)
+   - Selected seats will be highlighted in yellow
+   - Occupied seats are shown in gray
 
-## Learn More
+2. **Passenger Information**
+   - Fill in required information for each selected seat
+   - Navigate between passengers using "Next" and "Previous" buttons
+   - All fields must be completed with valid data
 
-To learn more about Next.js, take a look at the following resources:
+3. **Completion**
+   - Review your selection and total price
+   - Click "Complete Transaction" to finalize reservation
+   - Receive confirmation via toast notification
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🔒 Validation Rules
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **Phone Numbers**: Must match Turkish format (5xxxxxxxxx)
+- **Email**: Must be a valid email format
+- **Required Fields**: All fields must be completed
+- **Passenger Limit**: Maximum 3 seats per reservation
 
-## Deploy on Vercel
+## 🎨 UI Components
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Interactive seat grid
+- Passenger information forms
+- Status indicators
+- Toast notifications
+- Confirmation modals
+- Price summary panel
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🔄 State Management
+
+The application manages several key states:
+- Selected seats
+- Passenger information
+- Active passenger
+- Form validation
+- Session timeout
+- Local storage synchronization
+
+## 🏗️ Project Structure
+**├── components/**  
+**│   ├── Home.tsx**  
+**│   ├── ConfirmationModal.tsx**  
+**├── types/**  
+**│   ├── Passenger.ts**  
+**├── public/**  
+**├── styles/**  
+└── ...
+
+`components/:` Reusable components of the application.
+
+`types/:` TypeScript type definitions.
+
+
+For any questions or feedback, please reach out to [sena.eser02@gmail.com](mailto:sena.eser02@gmail.com)
+
+Made with ❤️ by Sena ESER
